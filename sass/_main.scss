@@ -56,8 +56,18 @@ body {
                     width: 100%;
                 }
             }
+            .more {
+                display: inline-block;
+                width: 100%;
+            }
         }
     }
+}
+
+.load--icon {
+    background: url('../IMG/giphy.gif') left / 50px no-repeat;
+    height: 50px;
+    margin-left: calc(25% - 12px);
 }
 
 .container {

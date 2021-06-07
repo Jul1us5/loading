@@ -1,6 +1,8 @@
 const lazyImages = document.querySelectorAll('img[data-src]');
 const loadMapBlock = document.querySelector('.map--load');
+const loadMoreBlock = document.querySelector('.load--more');
 const windowHeight = document.documentElement.clientHeight;
+
 
 // Step: 1 | Find index
 let lazyImgPosition = [];
@@ -19,7 +21,9 @@ window.addEventListener('scroll', scrollActive);
 
 function scrollActive() {
     lazyScrollCheck();
-
+    if (!loadMoreBlock.classList.contains('loaded')) {
+        loadMore();
+    }
     if (!loadMapBlock.classList.contains('loaded')) {
         getMap();
     }
@@ -56,5 +60,55 @@ function getMap() {
             loadMapBlock.classList.add('loaded');
         }
     }
+
+}
+
+// More loading
+
+function loadMore() {
+
+    const loadMorePosition = loadMoreBlock.getBoundingClientRect().top + pageYOffset;
+    const loadMoreHeight = loadMoreBlock.offsetHeight;
+
+    if (pageYOffset > (loadMorePosition + loadMoreHeight) - windowHeight) {
+        getContent();
+    }
+}
+
+async function getContent() {
+
+    if (!document.querySelector('.load--icon')) {
+        loadMoreBlock.insertAdjacentHTML(
+            'beforeend',
+            '<div class="load--icon"></div>'
+        );
+    }
+    loadMoreBlock.classList.add('loaded');
+
+    let response = await fetch('more.html', {
+        method: 'GET',
+    });
+
+    if (response.ok) {
+
+        let respResult = await response.text();
+        loadMoreBlock.insertAdjacentHTML('beforeend', respResult);
+        loadMoreBlock.classList.remove('loaded');
+        if (document.querySelector('.load--icon')) {
+            document.querySelector('.load--icon').remove();
+        }
+    } else {
+        alert('!!!!!!!!!!');
+    }
+}
+
+
+fetch('https://jul1u5.herokuapp.com/notes')
+    .then(response => response.json())
+    .then(data => getData(data));
+
+function getData(param) {
+
+    console.log(param[0]);
 
 }
